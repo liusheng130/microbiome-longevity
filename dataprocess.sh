@@ -87,6 +87,8 @@ sed '1'd merge.metagenome.txt |sed '1s/.metagenome//g' >merge.metagenome.xls
 awk '$0~/clade_name/||$0~/s__/{print $0}' merge.metagenome.xls |cut -d '|' -f 7- >merge.metagenome.species.xls
 sed 's/^s__//g' merge.metagenome.species.xls | sed '/|t__/'d |sed 's/clade_name//' >merge.metagenome.species.v1.xls
 
+## association between BGCs and species abundance
+Rscript association_case.R merge.metagenome.species.v1.xls allsample.BGCs.TPM.t.xls spearman BGC_species
 
 
 
