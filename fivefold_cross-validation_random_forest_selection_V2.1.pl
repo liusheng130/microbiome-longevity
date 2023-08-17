@@ -11,15 +11,15 @@ perl fivefold_cross-validation_random_forest_selection.pl
 Required:
 -train_p    [s]    train sample set profile
 -train_m    [s]    train sample set group infomation
--name        [s]    group names use to calculate, only allow two groups
+-name       [s]    group names use to calculate, only allow two groups
 
 Optional:
 -test_p    [s]    test sample set profile
 -test_m    [s]    test sample set sample group infomation
 -prefix    [s]    output prefix [default All]
 -outdir    [s]    out put directory [default ./]
--color        [s]    color for group    [default "#4DAF4A,#E41A1C"]
--ci_color    [s]    color for roc ci shape [default "red"]
+-color     [s]    color for group    [default "#4DAF4A,#E41A1C"]
+-ci_color  [s]    color for roc ci shape [default "red"]
 -fea_num    [i]    feature number to plot [default 10]
 -fea_hei    [f]    height of feature importance plot [default 2]
 -fea_wid    [f]    width of feature importance plot [default 6]
@@ -455,11 +455,3 @@ close R;
 `rm $outdir/$prefix\_$group\_train_ci_result.txt` if (-e "$outdir/$prefix\_$group\_train_ci_result.txt");
 `rm $outdir/$prefix\_$group\_test_ci_result.txt` if (-e "$outdir/$prefix\_$group\_test_ci_result.txt");
 
-#----- sub -----
-sub version {
-    print "
-Version 2.1 2019-07-10 1. Plot roc by ggroc; plot feature importance by ggplot2
-                        2. Add -ci_color, -fea_num, -fea_hei, -fea_wid
-\n";
-}
-#----- THE END -----
