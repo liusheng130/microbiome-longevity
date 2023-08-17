@@ -1,3 +1,4 @@
+## species-BGC association analysis
 argv <- commandArgs(T)
 if(length(argv) != 4){ stop(
 "Rscript XX [species profile matrix] [BGCs TPM matrix] [method] [outputPrefix]
