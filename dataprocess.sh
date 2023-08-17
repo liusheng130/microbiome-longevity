@@ -14,7 +14,7 @@ bowtie2 -p 4 -x /public1/data/liusheng/data/GRCh38/hg38 -1 cleandata/$i.1.clean.
 done
 for i in `cat sample_List.txt`;do qsub shell/$i.rmhost.sh; done
 
-## assembly
+## assembly using megahit
 for i in `cat sample_List.txt`;do echo "#!/bin/bash
 #!/bin/bash
 #PBS -N megahit
@@ -74,14 +74,14 @@ done
 cat contig.bgc.result/*.bgc.TPM.sum.txt |awk '{print $1}' |sort |uniq >all.uniq.BGCs;
 perl mergy.TMP.pl allsample.BGCs.TPM.xls
 
-## calculate the species abundance using metaphlan
+## calculate the species abundance using MetaPhlAn
 for i in `cat sample_List.txt`;do echo "#!/bin/bash
 #PBS -N metaphlan
 metaphlan rmhost/$i/$i.rmhost_1.fq.gz,rmhost/$i/$i.rmhost_2.fq.gz --bowtie2db /data/data1/liusheng/database/metaphlan/mpa_vJan21/ \
 -x mpa_vJan21_CHOCOPhlAnSGB_202103 --nproc 4 --input_type fastq --bowtie2out $i.bowtie2.bz2 \
 -o metaphlan/output/$i.metagenome.txt" >>shell/$i.metaphlan.sh
 
-## mergy the species abundance of multiple samples
+## mergy the metaphlan results of multiple samples
 merge_metaphlan_tables.py metaphlan/output/*metagenome.txt >merge.metagenome.txt
 sed '1'd merge.metagenome.txt |sed '1s/.metagenome//g' >merge.metagenome.xls
 awk '$0~/clade_name/||$0~/s__/{print $0}' merge.metagenome.xls |cut -d '|' -f 7- >merge.metagenome.species.xls
