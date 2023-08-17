@@ -1,25 +1,24 @@
 argv <- commandArgs(T)
 if(length(argv) != 4){ stop(
-"Rscript XX [species abundance matrix] [BGCs TPM matrix] [method] [outputPrefix]
-NOTICE: the column of the profile must be matched with the row of phenotype
+"Rscript XX [species profile matrix] [BGCs TPM matrix] [method] [outputPrefix]
 method: method of correlation coefficient including spearman, pearson"
 ) }
-# data prof
+# species profile
 dat <- read.table(argv[1],check.names=F,head = T)
-# phenotype
-phe <- read.table(argv[2],check.names=F,head=T)
+# BGCs TPM matrix
+BGC <- read.table(argv[2],check.names=F,head=T)
 method <- as.character(argv[3])
 prefix <- argv[4]
 dat <- as.matrix(dat)
 cn <- colnames(dat)
 cn <- gsub("","",cn)
-rn <- rownames(phe)
+rn <- rownames(BGC)
 
 ### reordering
 pid <- pmatch(cn , rn) 
 if(length(pid[is.na(pid)]) != 0) stop("please check the data!")
-phe <- phe[pid,]
-nr <- nrow(phe)
+BGC <- BGC[pid,]
+nr <- nrow(BGC)
 
 CORT <- function(x, y){
         v <- vector(length = 2)
@@ -38,10 +37,10 @@ CORT <- function(x, y){
         return(v)
 }
 
-colN <- colnames(phe)
-for(i in 1:ncol(phe)){
+colN <- colnames(BGC)
+for(i in 1:ncol(BGC)){
         fn <- paste(prefix, "correl", colN[i], "txt", sep = ".")
-        Factor <- phe[,i]       
+        Factor <- BGC[,i]       
         if(is.factor(Factor)){
                 Le <- levels(Factor)
                 tab <- table(Factor)
