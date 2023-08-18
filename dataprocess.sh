@@ -18,7 +18,7 @@ for i in `cat sample_List.txt`;do qsub shell/$i.rmhost.sh; done
 for i in `cat sample_List.txt`;do echo "#!/bin/bash
 #!/bin/bash
 #PBS -N megahit
-megahit -1 rmhost/$i/$i.rmhost_1.fq.gz -2 rmhost/$i/$i.rmhost_2.fastq.gz -o megahit/output/$i" >>shell/$i.megahit.sh;
+megahit -1 rmhost/$i/$i.rmhost.fq.1.gz -2 rmhost/$i/$i.rmhost.fq.2.gz -o megahit/output/$i" >>shell/$i.megahit.sh;
 done
 for i in `cat sample_List.txt`;do qsub shell/$i.megahit.sh; done
 
@@ -45,7 +45,7 @@ grep ' Region ' antismash/output/$i/index.html |awk '{print $8}' |sort |uniq -c 
 for i in `cat sample_List.txt`;do echo "#!/bin/bash
 #PBS -N salmon
 salmon index -t assembly_filter_results_megahit/$i.contigs.fna -i salmon/output/$i.contig;
-salmon quant -p 4 -l A -i salmon/output/$i.contig -1 rmhost/$i/$i.rmhost_1.fq.gz -2 rmhost/$i/$i.rmhost_2.fq.gz \
+salmon quant -p 4 -l A -i salmon/output/$i.contig -1 rmhost/$i/$i.rmhost.fq.1.gz -2 rmhost/$i/$i.rmhost.fq.2.gz \
 --meta -o salmon/output/$i.quant" >>shell/$i.salmon.sh; done
 for i in `cat sample_List.txt`;do qsub shell/$i.salmon.sh; done
 
@@ -77,7 +77,7 @@ perl mergy.TMP.pl allsample.BGCs.TPM.xls
 ## calculate the species abundance using MetaPhlAn
 for i in `cat sample_List.txt`;do echo "#!/bin/bash
 #PBS -N metaphlan
-metaphlan rmhost/$i/$i.rmhost_1.fq.gz,rmhost/$i/$i.rmhost_2.fq.gz --bowtie2db /data/data1/liusheng/database/metaphlan/mpa_vJan21/ \
+metaphlan rmhost/$i/$i.rmhost.fq.1.gz,rmhost/$i/$i.rmhost.fq.2.gz --bowtie2db /data/data1/liusheng/database/metaphlan/mpa_vJan21/ \
 -x mpa_vJan21_CHOCOPhlAnSGB_202103 --nproc 4 --input_type fastq --bowtie2out $i.bowtie2.bz2 \
 -o metaphlan/output/$i.metagenome.txt" >>shell/$i.metaphlan.sh
 
