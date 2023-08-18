@@ -29,7 +29,7 @@ seqtk seq -L 1000 megahit/output/$i/final.contigs.fa > assembly_filter_results_m
 done
 for i in `cat sample_List.txt`;do qsub shell/$i.seqtk.sh; done
 
-## antismash to analyse BGCs
+## using antismash to analyse BGCs of each sample
 for i in `cat sample_List.txt`;do echo "#!/bin/bash
 #PBS -N antismash
 antismash --taxon bacteria --genefinding-tool prodigal assembly_filter_results_megahit/$i.contigs.fna \
@@ -91,11 +91,15 @@ sed 's/^s__//g' merge.metagenome.species.xls | sed '/|t__/'d |sed 's/clade_name/
 Rscript association.R merge.metagenome.species.v1.xls allsample.BGCs.TPM.t.xls spearman BGC_species
 
 ## using metagenomic reads mapped to Akkermansia muciniphila, and assembly to obtain the draft genome
+# build index of the representative reference genome of Akkermansia muciniphila
 bowtie2-build GCF_009731575.1_ASM973157v1_genomic.fna Akk.JCM30893
 # using samples with relative high abundance of Akkermansia muciniphila in each dataset
 bowtie2 -p 8 -x Akk.JCM30893 -1 $i.rmhost.fq.1.gz -2 $i.rmhost.fq.2.gz --al-conc $i.Akk.JCM30893.fq
 spades.py -1 $i.Akk.JCM30893.1.fq -2 $i.Akk.JCM30893.2.fq -o $i.spades
 software/quast-5.2.0/quast.py $i.spades/scaffolds.fasta -r GCF_009731575.1_ASM973157v1_genomic.fna -o $i.spades.quast_out
+# using antismash to analyse BGCs of these Akkermansia muciniphila draft genomes
+antismash --taxon bacteria --genefinding-tool prodigal $i.spades/scaffolds.fasta -c 4 --output-dir $i.Amuciniphila.genome.antismash
+grep ' Region ' $i.Amuciniphila.genome.antismash/index.html |awk '{print $8}' |sort |uniq -c >$i.Amuciniphila.genome.bgc.txt
 
 
 
