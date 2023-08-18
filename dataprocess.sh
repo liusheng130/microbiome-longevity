@@ -90,5 +90,12 @@ sed 's/^s__//g' merge.metagenome.species.xls | sed '/|t__/'d |sed 's/clade_name/
 ## association between BGCs and species abundance
 Rscript association.R merge.metagenome.species.v1.xls allsample.BGCs.TPM.t.xls spearman BGC_species
 
+## using metagenomic reads mapped to Akkermansia muciniphila, and assembly to obtain the draft genome
+bowtie2-build GCF_009731575.1_ASM973157v1_genomic.fna Akk.JCM30893
+# using samples with relative high abundance of Akkermansia muciniphila in each dataset
+bowtie2 -p 8 -x Akk.JCM30893 -1 $i.rmhost.fq.1.gz -2 $i.rmhost.fq.2.gz --al-conc $i.Akk.JCM30893.fq
+spades.py -1 $i.Akk.JCM30893.1.fq -2 $i.Akk.JCM30893.2.fq -o $i.spades
+software/quast-5.2.0/quast.py $i.spades/scaffolds.fasta -r GCF_009731575.1_ASM973157v1_genomic.fna -o $i.spades.quast_out
+
 
 
